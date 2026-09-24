@@ -2,44 +2,277 @@
 
 ## Objective
 
-This investigation samples a 10 Hz sinusoid at five rates and compares each set of discrete samples with a fine-step reference waveform. It demonstrates how sampling rate affects the information available to represent an analog vibration signal.
+This investigation samples a 10 Hz sinusoidal signal at five sampling rates and compares each set of discrete samples with a fine-step reference waveform. It demonstrates how the sampling rate affects the ability to represent an analog vibration signal.
 
 ## Nyquist Analysis
 
-The highest signal frequency is \(f_{max}=10\,\text{Hz}\). The Nyquist minimum is:
+The highest frequency component of the signal is
 
-\[
-f_s \ge 2f_{max}=2(10)=20\,\text{Hz}.
-\]
+$$
+f_{\max}=10\text{ Hz}.
+$$
 
-Thus, 20 Hz is the ideal boundary; rates above 20 Hz satisfy the criterion with margin. Among the tested values, 20, 25, 50, and 100 Hz meet the inequality, while 15 Hz does not. In practice, sampling exactly at the boundary is not recommended: it leaves no transition band for an anti-aliasing filter and is sensitive to noise, frequency variation, and timing errors. For this zero-phase sine, sampling at 20 Hz also lands on zero crossings, producing all-zero samples and failing to show the waveform's amplitude.
+According to the Nyquist sampling theorem, the sampling frequency must satisfy
+
+$$
+f_s \geq 2f_{\max}.
+$$
+
+Therefore,
+
+$$
+f_s \geq 2(10)=20\text{ Hz}.
+$$
+
+Thus, the theoretical Nyquist rate for this signal is **20 Hz**.
+
+Among the tested sampling rates:
+
+| Sampling rate | Samples per 10 Hz cycle | Nyquist criterion     |
+| ------------: | ----------------------: | --------------------- |
+|         15 Hz |                     1.5 | ❌ Below Nyquist       |
+|         20 Hz |                       2 | ⚠️ Exactly at Nyquist |
+|         25 Hz |                     2.5 | ✅ Above Nyquist       |
+|         50 Hz |                       5 | ✅ Above Nyquist       |
+|        100 Hz |                      10 | ✅ Above Nyquist       |
+
+Although 20 Hz satisfies the theoretical Nyquist condition, sampling exactly at the Nyquist rate is not generally recommended in a practical system. There is no margin for filter roll-off, noise, frequency variation, or sampling-time errors.
+
+Furthermore, for the particular signal used here,
+
+$$
+x(t)=\sin(2\pi 10t),
+$$
+
+sampling at 20 Hz gives
+
+$$
+x[n]=\sin\left(2\pi 10\frac{n}{20}\right)
+=\sin(\pi n)=0.
+$$
+
+Therefore, every sample is theoretically zero. This is caused by the particular phase of the sinusoid and the sampling instants coinciding with its zero crossings. Consequently, this particular sampled record does not reveal the amplitude of the original sinusoid.
 
 ## Results
 
-- **15 Hz:** Below the Nyquist minimum. The samples cannot uniquely represent the 10 Hz input; the apparent lower-frequency pattern is aliasing.
-- **20 Hz:** Exactly at Nyquist. This phase alignment yields samples at zero crossings, so the amplitude and waveform are not recoverable from this record.
-- **25 Hz:** Above Nyquist, so the ideal criterion is met. There are only 2.5 samples per cycle, giving a sparse representation and limited practical margin.
-- **50 Hz:** Five samples per cycle. The waveform is represented more clearly and has more margin than 25 Hz.
-- **100 Hz:** Ten samples per cycle. This gives the clearest plotted representation of the tested choices, at a higher data and processing cost.
+### 15 Hz
 
-The figures use a fine-step curve as a visual approximation to the continuous signal and stem markers for actual samples. The one-second endpoint is included in each plot; the number of unique sampling intervals in a one-second record is \(f_s\).
+The sampling frequency is below the Nyquist rate:
+
+$$
+15 < 20\text{ Hz}.
+$$
+
+Therefore, aliasing occurs.
+
+For a 10 Hz signal sampled at 15 Hz, the aliased frequency can be calculated as
+
+$$
+f_{\text{alias}}=|f-f_s|
+=|10-15|
+=5\text{ Hz}.
+$$
+
+Thus, the 10 Hz sinusoid appears as a lower-frequency 5 Hz component in the sampled data.
+
+### 20 Hz
+
+The sampling frequency is exactly the Nyquist rate:
+
+$$
+20=2(10)\text{ Hz}.
+$$
+
+There are exactly two samples per cycle. For the zero-phase sine wave,
+
+$$
+x[n]=\sin(\pi n)=0,
+$$
+
+so all theoretical samples are zero.
+
+This demonstrates an important limitation of sampling exactly at the Nyquist rate: although the mathematical Nyquist condition is satisfied, the particular sampling phase can make the sampled data unsuitable for recovering the waveform amplitude.
+
+### 25 Hz
+
+The sampling frequency is above the Nyquist rate:
+
+$$
+25>20\text{ Hz}.
+$$
+
+There are
+
+$$
+\frac{25}{10}=2.5
+$$
+
+samples per cycle.
+
+The theoretical Nyquist condition is therefore satisfied, and the signal can be represented without aliasing under ideal conditions. However, 2.5 samples per cycle provides relatively sparse waveform representation and only a small practical margin above the minimum.
+
+### 50 Hz
+
+The sampling frequency is
+
+$$
+50>20\text{ Hz},
+$$
+
+giving
+
+$$
+\frac{50}{10}=5
+$$
+
+samples per cycle.
+
+The sampled waveform is represented much more clearly than at 25 Hz, while requiring a moderate amount of data.
+
+### 100 Hz
+
+The sampling frequency is
+
+$$
+100>20\text{ Hz},
+$$
+
+giving
+
+$$
+\frac{100}{10}=10
+$$
+
+samples per cycle.
+
+Among the tested rates, 100 Hz provides the densest and clearest representation of the 10 Hz waveform. It also provides substantially more margin above the Nyquist rate, although it produces more samples and therefore increases data-processing and storage requirements.
 
 ## Aliasing Discussion
 
-Aliasing occurs at 15 Hz because it is below \(2f_{max}=20\) Hz. Sampling then cannot distinguish the 10 Hz input from a lower-frequency alias; for this setup, the alias frequency is \(|10-15|=5\) Hz. At 20 Hz, the Nyquist equality holds mathematically, so this is the limiting boundary rather than below-Nyquist undersampling. However, the zero-phase samples all fall on zero crossings, making this specific finite set insufficient to recover the signal. Rates above 20 Hz avoid this ideal single-tone ambiguity, assuming suitable anti-alias filtering. For a practical system, 100 Hz is recommended among the tested rates: it gives ten samples per cycle and useful margin for imperfect sensors, filter roll-off, timing variation, and signal changes, while remaining a moderate data rate for a single monitored channel. The right production rate should also account for all vibration frequencies of interest and available anti-alias filtering.
+Aliasing occurs when the sampling frequency is insufficient to distinguish the original signal frequency from another frequency that produces the same sampled sequence.
+
+For the 15 Hz sampling rate,
+
+$$
+f_s=15\text{ Hz}<20\text{ Hz},
+$$
+
+so the 10 Hz signal is undersampled. Its alias frequency is
+
+$$
+f_{\text{alias}}=|10-15|=5\text{ Hz}.
+$$
+
+Consequently, the sampled data can appear as a 5 Hz signal even though the original signal is 10 Hz.
+
+At 20 Hz, the sampling rate is exactly equal to twice the signal frequency:
+
+$$
+f_s=2f.
+$$
+
+This is the theoretical Nyquist boundary. For the particular zero-phase sine wave,
+
+$$
+\sin(2\pi 10n/20)=\sin(\pi n)=0,
+$$
+
+so all samples occur at zero crossings. This does not mean that every signal sampled at 20 Hz will produce zero samples; it is a consequence of the specific phase and sampling alignment used in this experiment.
+
+At 25, 50, and 100 Hz, the sampling frequencies are above the Nyquist rate, so the 10 Hz signal is not theoretically aliased, assuming ideal sampling and adequate anti-aliasing filtering.
 
 ## Engineering Recommendation
 
-Use **100 Hz** among the tested choices for this 10 Hz signal. It provides ten samples per cycle and a fivefold margin over the Nyquist minimum, improving waveform detail and robustness without the data volume of much higher rates. A real condition-monitoring design must first define the full vibration bandwidth, then choose the sampling rate and analog anti-alias filter together. If processing or storage is especially constrained, 50 Hz is a reasonable lower-cost option for this known 10 Hz signal, provided filtering and timing are controlled.
+Among the tested sampling rates, **100 Hz** provides a practical choice for this 10 Hz signal.
+
+The ratio between the sampling frequency and the signal frequency is
+
+$$
+\frac{100}{10}=10
+$$
+
+samples per cycle.
+
+Relative to the theoretical Nyquist rate,
+
+$$
+\frac{100}{20}=5.
+$$
+
+Therefore, 100 Hz is **five times the Nyquist rate**, not merely the minimum required rate. This provides additional practical margin for filter roll-off, timing variation, noise, and small changes in the vibration frequency.
+
+If data storage and processing resources are more constrained, **50 Hz** provides
+
+$$
+\frac{50}{10}=5
+$$
+
+samples per cycle and is also comfortably above the theoretical Nyquist rate.
+
+The appropriate production sampling rate should ultimately be determined from the **highest vibration frequency that needs to be measured**, rather than only from the 10 Hz component considered in this experiment. The sampling frequency and the analog anti-aliasing filter should be designed together.
+
+## Sampling Interval and Number of Samples
+
+The sampling period is
+
+$$
+T_s=\frac{1}{f_s}.
+$$
+
+Therefore:
+
+| \(f_s\) | Sampling period \(T_s\) |
+| ------: | ----------------------: |
+|   15 Hz |           \(0.06667\) s |
+|   20 Hz |           \(0.05000\) s |
+|   25 Hz |           \(0.04000\) s |
+|   50 Hz |           \(0.02000\) s |
+|  100 Hz |           \(0.01000\) s |
+
+For a one-second interval from \(t=0\) to \(t=1\) **including both endpoints**, the number of sampling points is
+
+$$
+N=f_s+1,
+$$
+
+because there are \(f_s\) sampling intervals.
+
+For example, at 100 Hz:
+
+$$
+N=100+1=101
+$$
+
+sample points, but there are exactly **100 sampling intervals** between \(t=0\) and \(t=1\).
 
 ## AI Usage
 
-- **AI Tool Used:** ChatGPT (OpenAI)
-- **Prompt(s):** “Explain aliasing for a 10 Hz sine sampled at 15, 20, 25, 50, and 100 Hz; determine the Nyquist minimum and suggest an engineering sampling rate.”
-- **Summary of AI Response:** The Nyquist minimum is 20 Hz. 15 Hz is below the criterion and aliases; 20 Hz is the limiting case; higher tested rates exceed the minimum. The response recommended allowing practical margin above Nyquist.
-- **What I Modified:** I considered the specified zero-phase sine and checked that its 20 Hz samples occur at integer half-cycle times, all zero crossings. I qualified the ideal Nyquist conclusion accordingly, selected 100 Hz from the provided options, and organized the MATLAB code to generate the requested plots.
-- **How I Verified the Results:** I checked the inequality \(f_s\ge20\) Hz and evaluated \(\sin(2\pi(10)n/f_s)\) at the sample times. At 15 Hz, the alias is 5 Hz. At 20 Hz, the sample values are zero (up to floating-point rounding); 25, 50, and 100 Hz exceed Nyquist. Run `Lecture02_sampling_aliasing.m` in MATLAB to regenerate all plots.
+* **AI Tool Used:** ChatGPT (OpenAI)
+* **Prompt:** “Explain aliasing for a 10 Hz sine sampled at 15, 20, 25, 50, and 100 Hz; determine the Nyquist minimum and suggest an engineering sampling rate.”
+* **Summary of AI Response:** The Nyquist rate for a 10 Hz signal is 20 Hz. Sampling at 15 Hz causes aliasing, while 20 Hz is the theoretical boundary and 25, 50, and 100 Hz exceed the Nyquist rate.
+* **What I Modified:** I checked the calculations for each sampling rate, explicitly calculated the alias frequency at 15 Hz, verified the zero-crossing behavior at 20 Hz, calculated the samples-per-cycle values, and clarified the difference between sampling points and sampling intervals.
+* **How I Verified the Results:** The Nyquist condition was checked using
 
-## Files
+$$
+f_s\geq2f_{\max}=20\text{ Hz}.
+$$
 
-The script writes `original_signal.png`, `sampling_15Hz.png`, `sampling_20Hz.png`, `sampling_25Hz.png`, `sampling_50Hz.png`, and `sampling_100Hz.png` in its current working directory. It also writes `sampling_comparison.png` with all five comparisons in one figure.
+The sampled signal was evaluated using
+
+$$
+x[n]=\sin\left(2\pi f\frac{n}{f_s}\right).
+$$
+
+For 15 Hz,
+
+$$
+f_{\text{alias}}=|10-15|=5\text{ Hz}.
+$$
+
+For 20 Hz,
+
+$$
+x[n]=\sin(\pi n)=0.
+$$
+
+For 25, 50, and 100 Hz, the sampling frequencies are above 20 Hz and therefore satisfy the ideal Nyquist criterion.
