@@ -14,7 +14,7 @@ The experiment adds interference at 50 Hz and 137 Hz plus Gaussian noise. The ra
 
 A 20 Hz low-pass cutoff is reasonable because the wanted tones at 5 Hz and 12 Hz lie below the cutoff, while the interference tones at 50 Hz and 137 Hz lie above it. This choice assumes that useful sensor information above 20 Hz can be discarded. If a real measurement contains meaningful content near or above 20 Hz, this filter can remove part of the measurement along with the noise.
 
-The FIR design has order 60, or 61 taps. FIR filters can provide linear phase and are inherently stable, but this design uses many more coefficients than the 4th-order Butterworth IIR. The IIR can provide a useful transition with fewer coefficients, though its phase response is nonlinear. Both filters are applied with `filtfilt` to remove phase delay in this offline comparison. Forward-backward filtering doubles the effective attenuation in dB and is not a causal, low-latency streaming operation.
+The FIR design has order 60, or 61 taps. FIR filters can provide linear phase and are inherently stable, but this design uses many more coefficients than the 4th-order Butterworth IIR. The IIR can provide a useful transition with fewer coefficients, though its phase response is nonlinear. When Signal Processing Toolbox is available, the script uses `filtfilt` for both outputs. Otherwise, it uses a base-MATLAB reflected-padding forward-backward helper with similar zero-phase behavior and approximate edge handling. Forward-backward filtering doubles the effective attenuation in dB and is not a causal, low-latency streaming operation.
 
 The script writes `sensor-time-comparison.png`, `sensor-filter-responses.png`, and `sensor-spectra-rmse.png`. Use the time plot to compare waveforms over the first 0.2 seconds, the response plot to inspect the 20 Hz cutoff, and the spectrum plot to check whether the 5 Hz and 12 Hz components remain while peaks near 50 Hz and 137 Hz fall.
 
@@ -34,7 +34,7 @@ The FIR filter is a reasonable choice when predictable phase and stability matte
 
 ## Part B: 50 Hz hum in audio
 
-The script loads MATLAB's Handel example, converts it to a column vector, and records its sample rate. It adds a sinusoid with amplitude 0.15 at 50 Hz, then designs second-order Butterworth stop-band filters for 49–51 Hz and 45–55 Hz. The script checks that the sample rate can represent 50 Hz and that the normalized edges are valid.
+The script loads MATLAB's Handel example, converts it to a column vector, and records its sample rate. It adds a sinusoid with amplitude 0.15 at 50 Hz, then designs second-order Butterworth stop-band filters for 49–51 Hz and 45–55 Hz. It uses `butter` when available and a bilinear-transform Butterworth implementation otherwise. The script checks that the sample rate can represent 50 Hz and that the normalized edges are valid.
 
 The narrow 49–51 Hz stop band targets a steady mains tone while limiting changes to nearby audio frequencies. A wider stop band can tolerate greater hum drift but removes more nearby audio content. `filtfilt` is used in both cases to avoid an intentional phase delay. The script saves waveform, spectrum, and response plots so the tone reduction and the effect on nearby frequencies can be compared.
 
@@ -43,7 +43,7 @@ The narrow 49–51 Hz stop band targets a steady mains tone while limiting chang
 | 49–51 Hz | Fill from MATLAB output |
 | 45–55 Hz | Fill from MATLAB output |
 
-The response value is calculated with `freqz`. This is the one-pass filter response; the forward-backward output has approximately twice the attenuation in dB. The spectrum is a separate check on the actual filtered signal. The script includes an optional playback block that uses the same peak normalization for the hum-added and narrow-filtered audio. Set `playAudio = true` in MATLAB and listen at the same playback gain before completing the note below.
+The response value is calculated with `freqz` when available and a direct polynomial response calculation otherwise. This is the one-pass filter response; the forward-backward output has approximately twice the attenuation in dB. The spectrum is a separate check on the actual filtered signal. The script includes an optional playback block that uses the same peak normalization for the hum-added and narrow-filtered audio. Set `playAudio = true` in MATLAB and listen at the same playback gain before completing the note below.
 
 **Listening note:** Fill in your own observation after playback. State whether the steady hum is reduced and whether you hear a change in useful audio.
 
