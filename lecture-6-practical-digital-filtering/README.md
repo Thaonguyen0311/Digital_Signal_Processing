@@ -1,22 +1,1 @@
-# Lecture 6 Practical Digital Filtering
-
-This folder contains a reproducible MATLAB script for both parts of the assignment and a report draft. The script uses the prescribed synthetic sensor signal and MATLAB's built-in `handel` sample. It creates six figures in `figures/`, prints RMSE and filter-response measurements, and includes an optional same-gain audio playback section.
-
-## Run
-
-Set the current folder to this directory and run in MATLAB:
-
-```matlab
-lecture6_filtering
-```
-
-The script records the MATLAB version and whether the required toolbox functions are available. With Signal Processing Toolbox it uses `fir1`, `butter`, `filtfilt`, and `freqz`. Without the toolbox it uses base-MATLAB equivalents for the Hamming-window FIR, bilinear Butterworth designs, frequency responses, and approximate forward-backward filtering. It saves figures as PNG files under `figures/`.
-
-## Before submitting
-
-- Run the script in MATLAB and confirm the six figures are created. If the instructor requires the toolbox functions specifically, run it on a MATLAB installation with Signal Processing Toolbox; the fallback forward-backward filter has approximate edge handling.
-- Copy the RMSE values and 50 Hz attenuation into `report.docx`.
-- Set `playAudio = true` and listen to the hum-added and filtered clips at the same gain; write your own listening observation in the report.
-- Review the report in your own words and identify the AI assistance as described there.
-
-MATLAB execution was unavailable in the preparation environment, so no numerical output or subjective listening result is claimed in the report draft.
+Û^š›bh¥êß¢¹­…â'ŠØš–,ŞçÚº[C®+Ş²Š^­«b¢z'¶…ŠW’ÊË^ššè¾'^­ö¢•çHÈXİ\™Hˆ˜XİXØ[YÚ][š[\š[™Â‚•\È›Û\ˆÛÛZ[œÈH™\›ÙXÚX›HPUPˆØÜš\›Üˆ›İ\ÈÙˆH\ÜÚYÛ›Y[[™H™\Ü˜YˆHØÜš\\Ù\ÈH™\ØÜšX™YŞ[]XÈÙ[œÛÜˆÚYÛ˜[[™PUP‰ÜÈZ[Z[ˆ[™[Ø[\Kˆ]Ü™X]\ÈÚ^šYİ\™\È[ˆšYİ\™\ËØš[È“TÑH[™š[\‹\™\ÜÛœÙHYX\İ\™[Y[Ë[™[˜ÛY\È[ˆÜ[Û˜[Ø[YKYØZ[ˆ]Y[È^X˜XÚÈÙXİ[Û‹‚‚ˆÈÈ[‚‚”Ù]Hİ\œ™[›Û\ˆÈ\È\™XİÜH[™[ˆ[ˆPUP‚‚˜X]X‚›Xİ\™M—Ùš[\š[™Â˜‚•HØÜš\™XÛÜ™ÈHPUPˆ™\œÚ[Ûˆ[™Ú]\ˆH™\]Z\™YÛÛ›Ş[˜İ[ÛœÈ\™H]˜Z[X›KˆÚ]ÚYÛ˜[›ØÙ\ÜÚ[™ÈÛÛ›Ş]\Ù\Èš\ŒX]\˜š[š[[™œ™\^˜ˆÚ]İ]HÛÛ›Ş]\Ù\È˜\ÙKSPUPˆ\]Z]˜[[È›ÜˆH[[Z[™Ë]Ú[™İÈ’T‹š[[™X\ˆ]\ÛÜ\ÚYÛœËœ™\]Y[˜ŞH™\ÜÛœÙ\Ë[™\›Ş[X]H›ÜØ\™X˜XÚİØ\™š[\š[™Ëˆ]Ø]™\ÈšYİ\™\È\È‘Èš[\È[™\ˆšYİ\™\ËØ‚‚ˆÈÈ™Y›Ü™HİX›Z][™Â‚‹H[ˆHØÜš\[ˆPUPˆ[™ÛÛ™š\›HHÚ^šYİ\™\È\™HÜ™X]YˆYˆH[œİXİÜˆ™\]Z\™\ÈHÛÛ›Ş[˜İ[ÛœÈÜXÚYšXØ[K[ˆ]ÛˆHPUPˆ[œİ[][ÛˆÚ]ÚYÛ˜[›ØÙ\ÜÚ[™ÈÛÛ›ŞÈH˜[˜XÚÈ›ÜØ\™X˜XÚİØ\™š[\ˆ\È\›Ş[X]HYÙH[™[™Ë‚‹HÛÜHH“TÑH˜[Y\È[™Lˆ][X][Ûˆ[È™\Ü™ØŞ‚‹HÙ]^P]Y[ÈHYX[™\İ[ˆÈH[KXYY[™š[\™YÛ\È]HØ[YHØZ[ÈÜš]H[İ\ˆİÛˆ\İ[š[™ÈØœÙ\˜][Ûˆ[ˆH™\Ü‚‹H™]šY]ÈH™\Ü[ˆ[İ\ˆİÛˆÛÜ™È[™Y[YHHRH\ÜÚ\İ[˜ÙH\È\ØÜšX™Y\™K‚‚“PUPˆ^Xİ][ÛˆØ\È[˜]˜Z[X›H[ˆH™\\˜][Ûˆ[š\›Û›Y[ÛÈ›È[Y\šXØ[İ]]ÜˆİXš™Xİ]™H\İ[š[™È™\İ[\ÈÛZ[YY[ˆH™\Ü˜YƒB‚ˆÈÈšYİ\™\Â‚ˆÈÈÈ\NˆÙ[œÛÜˆš[\š[™Â‚ˆVÔÙ[œÛÜˆÚYÛ˜[[™š[\™Yİ]]×JšYİ\™\ËÜÙ[œÛÜ‹][YKXÛÛ\\š\ÛÛ‹œ™ÊB‚ˆVÑ’Tˆ[™RTˆÙ[œÛÜˆš[\ˆ™\ÜÛœÙ\×JšYİ\™\ËÜÙ[œÛÜ‹Yš[\‹\™\ÜÛœÙ\Ëœ™ÊB‚ˆVÔÙ[œÛÜˆÜXİ˜H[™“TÑHÛÛ\\š\ÛÛ—JšYİ\™\ËÜÙ[œÛÜ‹\ÜXİ˜K\›\ÙKœ™ÊB‚ˆÈÈÈ\ˆ]Y[È›İÚš[\š[™Â‚ˆVĞ]Y[ÈØ]™Y›Ü›HÛÛ\\š\ÛÛ—JšYİ\™\ËØ]Y[Ë]Ø]™Y›Ü›KXÛÛ\\š\ÛÛ‹œ™ÊB‚ˆVĞ]Y[ÈÜXİ˜WJšYİ\™\ËØ]Y[Ë\ÜXİ˜Kœ™ÊB‚ˆVÓ˜\œ›İÈ[™ÚYH]Y[È›İÚ™\ÜÛœÙ\×JšYİ\™\ËØ]Y[Ë[›İÚ\™\ÜÛœÙ\Ëœ™ÊCB
